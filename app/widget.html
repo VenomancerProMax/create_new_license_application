@@ -8,38 +8,116 @@
 </head>
 <body>
     <div class="form-container">
-        <form action="/submit_record">
+        <form id="record-form">
             <label for="license-authority">License Authority</label>
             <select id="license-authority" name="license_authority">
                 <option value="" disabled selected>Select an option</option>
-                <option value="IFZA">IFZA</option>
-                <option value="AJMAN">AJMAN</option>
-                <option value="SPC">SPC</option>
-                <option value="SHAMS">SHAMS</option>
-                <option value="MEYDAN">MEYDAN</option>
-                <option value="OTHERS">OTHERS</option>
+                <option value="Abu Dhabi Airport Free Zone">Abu Dhabi Airport Free Zone</option>
+                <option value="Abu Dhabi Department of Economic Development">Abu Dhabi Department of Economic Development</option>
+                <option value="Abu Dhabi Global Market">Abu Dhabi Global Market</option>
+                <option value="Ajman Free Zone">Ajman Free Zone</option>
+                <option value="Ajman Media City Free Zone">Ajman Media City Free Zone</option>
+                <option value="Dubai Academic City">Dubai Academic City</option>
+                <option value="Dubai Airport Free Zone">Dubai Airport Free Zone</option>
+                <option value="Dubai Biotech Research Park">Dubai Biotech Research Park</option>
+                <option value="Dubai Car & Automotive City Free Zone">Dubai Car & Automotive City Free Zone</option>
+                <option value="Dubai Department of Economic Development">Dubai Department of Economic Development</option>
+                <option value="Dubai Design District">Dubai Design District</option>
+                <option value="Dubai Healthcare City">Dubai Healthcare City</option>
+                <option value="Dubai Industrial City">Dubai Industrial City</option>
+                <option value="Dubai Internet City">Dubai Internet City</option>
+                <option value="Dubai Intl Financial Centre">Dubai Intl Financial Centre</option>
+                <option value="Dubai Knowledge Village">Dubai Knowledge Village</option>
+                <option value="Dubai Media City">Dubai Media City</option>
+                <option value="Dubai Multi Commodities Center">Dubai Multi Commodities Center</option>
+                <option value="Dubai Outsource Zone">Dubai Outsource Zone</option>
+                <option value="Dubai Science Park">Dubai Science Park</option>
+                <option value="Dubai Silicon Oasis">Dubai Silicon Oasis</option>
+                <option value="Dubai South">Dubai South</option>
+                <option value="Dubai Studio City">Dubai Studio City</option>
+                <option value="Dubai Techno Park">Dubai Techno Park</option>
+                <option value="Dubai World Trade Centre">Dubai World Trade Centre</option>
+                <option value="Fujairah Creative City">Fujairah Creative City</option>
+                <option value="Fujairah Free Zone">Fujairah Free Zone</option>
+                <option value="Gold and Diamond Park">Gold and Diamond Park</option>
+                <option value="Hamriyah Free Zone">Hamriyah Free Zone</option>
+                <option value="Industrial City of Abu Dhabi">Industrial City of Abu Dhabi</option>
+                <option value="International Free Zone Authority">International Free Zone Authority</option>
+                <option value="Intl Media Production Zone">Intl Media Production Zone</option>
+                <option value="Jebel Ali Free Zone">Jebel Ali Free Zone</option>
+                <option value="KIZAD">KIZAD</option>
+                <option value="Meydan Free Zone">Meydan Free Zone</option>
+                <option value="Ras Al Khaimah Economic Zone">Ras Al Khaimah Economic Zone</option>
+                <option value="Ras Al Khaimah International Corporate Centre">Ras Al Khaimah International Corporate Centre</option>
+                <option value="Sharjah Airport Intl Free Zone">Sharjah Airport Intl Free Zone</option>
+                <option value="Sharjah Media City">Sharjah Media City</option>
+                <option value="Sharjah Publishing City">Sharjah Publishing City</option>
+                <option value="Sharjah Research Technology and Innovation Park">Sharjah Research Technology and Innovation Park</option>
+                <option value="Trakhees">Trakhees</option>
+                <option value="Twofour54">Twofour54</option>
+                <option value="Umm Al Quwain Free Trade Zone">Umm Al Quwain Free Trade Zone</option>
             </select>
 
             <label for="company-formation-type">Company Formation Type</label>
-            <input type="text" id="company-formation-type" name="company_formation_type">
+            <select id="company-formation-type" name="company-formation-type">
+                <option value="" disabled selected>Select an option</option>
+                <option value="Branch of a Foreign Company">Branch of a Foreign Company</option>
+                <option value="Branch of a UAE Company">Branch of a UAE Company</option>
+                <option value="Franchise of a Foreign Company">Franchise of a Foreign Company</option>
+                <option value="Franchise of a UAE Company">Franchise of a UAE Company</option>
+                <option value="Limited Liability Company (Multiple Shareholders)">Limited Liability Company (Multiple Shareholders)</option>
+                <option value="Limited Liability Company (Single Shareholder)">Limited Liability Company (Single Shareholder)</option>
+                <option value="Mainland Company (Multiple Shareholders)">Mainland Company (Multiple Shareholders)</option>
+                <option value="Mainland Company (Single Shareholder)">Mainland Company (Single Shareholder)</option>
+            </select>
 
-            <label for="office-type">Office Type</label>
-            <input type="text" id="office-type" name="office_type">
+            <label for="office-type">Company Formation Type</label>
+            <select id="office-type" name="office-type">
+                <option value="" disabled selected>Select an option</option>
+                <option value="Shared Desk">Shared Desk</option>
+                <option value="Shared Office">Shared Office</option>
+                <option value="Dedicated Desk">Dedicated Desk</option>
+                <option value="Dedicated Office/Facility">Dedicated Office/Facility</option>
+                <option value="Storage">Storage</option>
+                <option value="Shell & Core">Shell & Core</option>
+                <option value="No Lease Option">No Lease Option</option>
+            </select>
 
             <label for="visa-quota">Visa Quota</label>
-            <input type="number" id="visa-quota" name="visa_quota">
+            <select id="visa-quota" name="visa-quota">
+                <option value="" disabled selected>Select an option</option>
+                <option value="Zero Visa License">Zero Visa License</option>
+                <option value="1 Visa License">1 Visa License</option>
+                <option value="2 Visa License">2 Visa License</option>
+                <option value="3 Visa License">3 Visa License</option>
+                <option value="4 Visa License">4 Visa License</option>
+                <option value="5 Visa License">5 Visa License</option>
+                <option value="6 Visa License">6 Visa License</option>
+                <option value="7 Visa License">7 Visa License</option>
+                <option value="8 Visa License">8 Visa License</option>
+                <option value="9 Visa License">9 Visa License</option>
+                <option value="10 Visa License">10 Visa License</option>
+                <option value="11 Visa License">11 Visa License</option>
+                <option value="12 Visa License">12 Visa License</option>
+                <option value="13 and more Visa License">13 and more Visa License</option>
+            </select>
 
             <label for="proposed-share-capital">Proposed Share Capital</label>
-            <input type="number" id="proposed-share-capital" name="proposed_share_capital">
-
+            <div class="currency-field">
+                <span class="currency-symbol">AED</span>
+                <input type="number" id="proposed-share-capital" name="proposed_share_capital" min="0" step="0.01" placeholder="0.00">
+            </div>
+            
             <label for="share-value">Share Value</label>
-            <input type="number" id="share-value" name="share_value">
+            <div class="currency-field">
+                <span class="currency-symbol">AED</span>
+                <input type="number" id="share-value" name="share_value" min="0" step="0.01" placeholder="0.00">
+            </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit_button_id">Submit</button>
         </form>
     </div>
 
-    <!-- Include your JavaScript file -->
     <script src="js/app.js"></script>
 </body>
 </html>

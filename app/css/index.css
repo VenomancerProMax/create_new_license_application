@@ -2,7 +2,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 14px;
 }
 
 body {
@@ -26,6 +27,7 @@ h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
+    font-size: 1.2em;
 }
 
 label {
@@ -42,7 +44,7 @@ input[type="number"] {
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
     transition: border 0.3s ease;
 }
@@ -52,35 +54,15 @@ input[type="number"]:focus {
     border-color: #4A90E2;
 }
 
-/* Search Container Styling */
-.search-container {
-    display: flex;
-    margin-bottom: 15px;
-}
-
-input[type="search"] {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
-    font-size: 16px;
-    outline: none;
-    transition: border 0.3s ease;
-}
-
-input[type="search"]:focus {
-    border-color: #4A90E2;
-}
-
 button[type="submit"] {
     margin-top: 20px;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #4A90E2;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -95,11 +77,29 @@ select {
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
     transition: border 0.3s ease;
 }
 
-select:focus {
-    border-color: #4A90E2;
+.currency-field {
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    margin-right: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Hide increment and decrement buttons */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
