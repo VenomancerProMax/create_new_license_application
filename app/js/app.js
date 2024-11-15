@@ -1,5 +1,6 @@
 let quoteName, quoteId, accountName, accountId, contactName, contactId, prospectName, prospectId;
 let formData = {};
+let applicationId = "";
 
 // Fetching data from the Quotes entity
 ZOHO.embeddedApp.on("PageLoad", entity => {
@@ -59,19 +60,44 @@ function create_record(event) {
         "Status": "In-Progress",
         "Account_Name": accountId,
         "Type": "New Trade License",
-        "Share_Value": formData.Share_Value,
         "License_Package": formData.Visa_Quota,
         "License_Jurisdiction": formData.License_Authority,
-        "Proposed_Share_Capital": formData.Proposed_Share_Capital,
-        "Office_Type": formData.Office_Type,
-        "Company_Formation_Type": formData.Company_Formation_Type
+        // "Office_Type": formData.Office_Type,
+        // "Company_Formation_Type": formData.Company_Formation_Type,
     };
 
     // Insert the record in Applications1
     ZOHO.CRM.API.insertRecord({ Entity: "Applications1", APIData: recordData, Trigger: ["workflow"] })
-    .then(function(data) {
-        quoteId = data.data;
-        console.log("Application Data: ", quoteId);
+    .then(function(response1) {
+        const applicationData = response1.data;
+        applicationData.map((record) => {
+            const applicationId = record.details.id;
+
+            // Prepare data for the related list record
+            var recordAppData = {
+                "Status": "In-Progress",
+                "Share_Value": formData.Share_Value,
+                "License_Package": formData.Visa_Quota,
+                "New_License_Application": applicationId,
+                "Application_Jurisdiction": formData.License_Authority,
+                "Total_Share_Capital": formData.Proposed_Share_Capital
+            };
+
+            // Insert record in related list module
+            ZOHO.CRM.API.insertRecord({ Entity: "New_License_Forms", APIData: recordAppData, Trigger: ["workflow"] })
+                .then(function(response2) {
+                    const relatedData = response2.data;
+                    relatedData.map((relatedRecord) => {
+                        console.log("Related Record Created:", relatedRecord);
+                    });
+                })
+                .catch(function(error) {
+                    console.error("Error inserting related record:", error);
+                });
+        });
+    })
+    .catch(function(error) {
+        console.error("Error inserting main record:", error);
     });
 }
 
