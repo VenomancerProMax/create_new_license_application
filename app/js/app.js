@@ -27,6 +27,8 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
             accountId = data.Account_Name.id;
             prospectId = data.Deal_Name.id;
 
+            console.log("DATA 1: ", data);
+
             // Function to display the custom alert
             createNewLicenseApplication = data.Create_New_License_Application;
             // Check if Create_New_License_Application is TRUE
@@ -122,7 +124,11 @@ function create_record(event) {
             };
 
             // Insert record in related list module
-            ZOHO.CRM.API.insertRecord({ Entity: "New_License_Forms", APIData: recordNewLicenseData, Trigger: ["workflow"] })
+            ZOHO.CRM.API.insertRecord({ 
+                Entity: "New_License_Forms", 
+                APIData: recordNewLicenseData
+                // , Trigger: ["workflow"] 
+            })
                 .then(function(response2) {
                     const relatedData = response2.data;
                     relatedData.map((relatedRecord) => {
