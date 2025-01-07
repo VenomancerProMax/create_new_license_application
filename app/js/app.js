@@ -1,6 +1,12 @@
-let quoteId, accountId, prospectId;
+
+//Live - /widget.html
+//Development - //https://127.0.0.1:5000/app/widget.html
+let quoteId;
+let accountId;
 let formData = {};
 let applicationId = "";
+let new_license_id;
+let prospectId;
 
 // Function to display the custom alert
 function showCustomAlert(message) {
@@ -15,20 +21,19 @@ function hideCustomAlert() {
     alertBox.classList.add("hidden");
 }
 
-
 // Fetching data from the Quotes entity
 ZOHO.embeddedApp.on("PageLoad", entity => {
-    var entity_id = entity.EntityId[0];
-    ZOHO.CRM.API.getRecord({ Entity: "Quotes", approved: "both", RecordID: entity_id })
+    let entity_id = entity.EntityId[0];
+    
+    ZOHO.CRM.API.getRecord({ Entity:"Quotes", approved:"both",RecordID: entity_id })
     .then(function(data) {
         const quoteData = data.data;
         quoteData.map((data) => {
             quoteId = data.id;
             accountId = data.Account_Name.id;
             prospectId = data.Deal_Name.id;
-
-            console.log("DATA 1: ", data);
-
+            console.log("PROSPECT ID 1: " + prospectId)
+            // console.log("DATA 1: ", data);
             // Function to display the custom alert
             createNewLicenseApplication = data.Create_New_License_Application;
             // Check if Create_New_License_Application is TRUE
@@ -44,7 +49,36 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
                 hideCustomAlert();
             }
         });
+       //Prospects
+        console.log("Final Prospect ID: " + prospectId )
+        console.log("Entity ID: " + entity_id)
+        ZOHO.CRM.API.getRecord({ Entity:"Deals", RecordID:prospectId })
+        .then(function(data) {
+            
+            const prospectData = data.data;
+            prospectData.map((data) => {
+                // let prospect_id = data.id;
+                let prospect_type = data.Type;
+                console.log("Prospect Type: " + prospect_type)
+                // Function to display the custom alert
+               
+                // Validation of Prospect Type. It will only accept New Trade License and Pre-Approval
+                if (prospect_type !== "New Trade License" && prospect_type !== "Pre-Approval") {
+                    const submitButton = document.getElementById("submit_button_id");
+                    submitButton.disabled = true;
+                    submitButton.style.backgroundColor = "#D3D3D3";
+                    showCustomAlert("This quote is not associated to New Trade License or Pre-Approval. Close the form to exit.");
+                }
+                // else {
+                //     const submitButton = document.getElementById("submit_button_id");
+                //     submitButton.disabled = false;
+                //     submitButton.style.backgroundColor = "";
+                //     hideCustomAlert();
+                // }
+            });
+        });
     });
+   
 });
 
 // Collecting form data
@@ -68,7 +102,7 @@ function create_record(event) {
                 "id": quoteId,
                 "Create_New_License_Application": true
           }, 
-            Trigger:["workflow"]
+            // Trigger:["workflow"]
         }
         ZOHO.CRM.API.updateRecord(updateQuotes)
         .then(function(data){
@@ -85,8 +119,6 @@ function create_record(event) {
             email = "opsn@uaecsp.club";
         } else if (formData.License_Authority === "International Free Zone Authority") {
             email = "partner@ifza.com";
-        } else if (formData.License_Authority === "Meydan Free Zone") {
-            email = "operations@tlz.ae";
         } else if (formData.License_Authority === "Sharjah Media City") {
             email = "safwan.m@scs.shams.ae";
         } else {
@@ -95,17 +127,22 @@ function create_record(event) {
 
     // Define the data to insert, combining form data and fetched quote data
     var recordData = {
-        "Email": email,
+        "Authority_Email_Address": email,
         "Deal_Name": prospectId,
         "Status": "In-Progress",
         "Account_Name": accountId,
         "Type": "New Trade License",
         "License_Package": formData.Visa_Quota,
-        "License_Jurisdiction": formData.License_Authority
+        "License_Jurisdiction": formData.License_Authority,
+        "Layout": "3769920000104212264"
     };
 
     // Insert the record in Applications1
-    ZOHO.CRM.API.insertRecord({ Entity: "Applications1", APIData: recordData, Trigger: ["workflow"] })
+    ZOHO.CRM.API.insertRecord({ 
+        Entity: "Applications1", 
+        APIData: recordData,
+        //  Trigger: ["workflow"] 
+        })
     .then(function(response1) {
         const applicationData = response1.data;
         applicationData.map((record) => {
@@ -113,14 +150,16 @@ function create_record(event) {
 
             // Prepare data for the related list record
             var recordNewLicenseData = {
+                "New_License_Application_Type": "New",
                 "Status": "In-Progress",
                 "Share_Value": formData.Share_Value,
                 "License_Package": formData.Visa_Quota,
                 "New_License_Application": applicationId,
                 "Application_Jurisdiction": formData.License_Authority,
                 "Total_Share_Capital": formData.Proposed_Share_Capital,
-                "Office_Type": formData.Office_Type,
-                "Legal_Type": formData.Company_Formation_Type
+                "Facility_Type": formData.Office_Type,
+                "Legal_Type": formData.Company_Formation_Type,
+                "Layout": "3769920000261689839"
             };
 
             // Insert record in related list module
@@ -132,8 +171,10 @@ function create_record(event) {
                 .then(function(response2) {
                     const relatedData = response2.data;
                     relatedData.map((relatedRecord) => {
-                        console.log("Related Record Created:", relatedRecord);  
-
+                        new_license_id = relatedRecord.details.id;
+                        console.log("New License ID: " + new_license_id)
+                        let new_license_url = "https://crm.zoho.com/crm/org682300086/tab/CustomModule3/" + applicationId;
+                        window.open(new_license_url, '_blank').focus();
                         // Disable the submit button and show the custom alert
                         const submitButton = document.getElementById("submit_button_id");
                         submitButton.disabled = true;
