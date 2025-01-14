@@ -7,6 +7,7 @@ let formData = {};
 let applicationId = "";
 let new_license_id;
 let prospectId;
+let primary_contact_name
 
 // Function to display the custom alert
 function showCustomAlert(message) {
@@ -33,6 +34,7 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
             accountId = data.Account_Name.id;
             prospectId = data.Deal_Name.id;
             console.log("PROSPECT ID 1: " + prospectId)
+            console.log("ACCOUNT ID 1: " + accountId)
             // console.log("DATA 1: ", data);
             // Function to display the custom alert
             createNewLicenseApplication = data.Create_New_License_Application;
@@ -54,7 +56,6 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
         console.log("Entity ID: " + entity_id)
         ZOHO.CRM.API.getRecord({ Entity:"Deals", RecordID:prospectId })
         .then(function(data) {
-            
             const prospectData = data.data;
             prospectData.map((data) => {
                 // let prospect_id = data.id;
@@ -69,16 +70,20 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
                     submitButton.style.backgroundColor = "#D3D3D3";
                     showCustomAlert("This quote is not associated to New Trade License or Pre-Approval. Close the form to exit.");
                 }
-                // else {
-                //     const submitButton = document.getElementById("submit_button_id");
-                //     submitButton.disabled = false;
-                //     submitButton.style.backgroundColor = "";
-                //     hideCustomAlert();
-                // }
+            });
+        });
+        //Accounts
+        console.log("Account ID 2: " + accountId )
+        ZOHO.CRM.API.getRecord({ Entity:"Accounts", RecordID:accountId })
+        .then(function(data) {
+            const accountData = data.data;
+            accountData.map((data) => {
+                primary_contact_name = data.Primary_Contact_Name;
+                // console.log(data)
+                console.log("Primary Contact Name: " + primary_contact_name)
             });
         });
     });
-   
 });
 
 // Collecting form data
@@ -159,7 +164,8 @@ function create_record(event) {
                 "Total_Share_Capital": formData.Proposed_Share_Capital,
                 "Facility_Type": formData.Office_Type,
                 "Legal_Type": formData.Company_Formation_Type,
-                "Layout": "3769920000261689839"
+                "Layout": "3769920000261689839",
+                "Primary_Contact_Name":primary_contact_name
             };
 
             // Insert record in related list module
