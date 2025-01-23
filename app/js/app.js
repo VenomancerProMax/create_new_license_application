@@ -7,7 +7,6 @@ let formData = {};
 let applicationId = "";
 let new_license_id;
 let prospectId;
-let primary_contact_name
 
 // Function to display the custom alert
 function showCustomAlert(message) {
@@ -16,11 +15,18 @@ function showCustomAlert(message) {
     alertMessage.textContent = message;
     alertBox.classList.remove("hidden");
 }
+
 // Function to hide the custom alert
 function hideCustomAlert() {
     const alertBox = document.getElementById("custom-alert");
     alertBox.classList.add("hidden");
 }
+
+// ====================================================================== //
+let isNewTradeLicense = false;
+let isProductDetailsValid = false;
+let type = "";
+// ====================================================================== //
 
 // Fetching data from the Quotes entity
 ZOHO.embeddedApp.on("PageLoad", entity => {
@@ -34,9 +40,32 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
             accountId = data.Account_Name.id;
             prospectId = data.Deal_Name.id;
             console.log("PROSPECT ID 1: " + prospectId)
-            console.log("ACCOUNT ID 1: " + accountId)
-            // console.log("DATA 1: ", data);
-            // Function to display the custom alert
+
+            const productDetails = data.Product_Details || [];
+            console.log(productDetails);
+            
+            const requiredItems = [
+                { name: "SPC | Pre approval" },
+                { name: "KIZAD Pre Approval" },
+                { name: "SHAMS | License Pre-Approval" },
+                { name: "IFZA License Pre-Approval" },
+                { name: "Ajman Immigration Security Approval" },
+                { name: "RAKEZ Security Approval for Shareholders" },
+            ];
+            
+            // ====================================================================== //
+            // Check if any product in Product_Details matches the requiredItems
+            isProductDetailsValid = productDetails.some(item => 
+                requiredItems.some(requiredItem => 
+                    item.product && item.product.name && item.product.name.trim() === requiredItem.name
+                )
+            );
+            
+            console.log(isProductDetailsValid); // This should now correctly log 'true' or 'false'
+            
+
+            // ====================================================================== //
+
             createNewLicenseApplication = data.Create_New_License_Application;
             // Check if Create_New_License_Application is TRUE
             if (createNewLicenseApplication === true) {
@@ -56,13 +85,12 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
         console.log("Entity ID: " + entity_id)
         ZOHO.CRM.API.getRecord({ Entity:"Deals", RecordID:prospectId })
         .then(function(data) {
+            
             const prospectData = data.data;
             prospectData.map((data) => {
-                // let prospect_id = data.id;
                 let prospect_type = data.Type;
                 console.log("Prospect Type: " + prospect_type)
-                // Function to display the custom alert
-               
+
                 // Validation of Prospect Type. It will only accept New Trade License and Pre-Approval
                 if (prospect_type !== "New Trade License" && prospect_type !== "Pre-Approval") {
                     const submitButton = document.getElementById("submit_button_id");
@@ -70,17 +98,18 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
                     submitButton.style.backgroundColor = "#D3D3D3";
                     showCustomAlert("This quote is not associated to New Trade License or Pre-Approval. Close the form to exit.");
                 }
-            });
-        });
-        //Accounts
-        console.log("Account ID 2: " + accountId )
-        ZOHO.CRM.API.getRecord({ Entity:"Accounts", RecordID:accountId })
-        .then(function(data) {
-            const accountData = data.data;
-            accountData.map((data) => {
-                primary_contact_name = data.Primary_Contact_Name;
-                // console.log(data)
-                console.log("Primary Contact Name: " + primary_contact_name)
+
+                // ====================================================================== //
+                if (prospect_type === "New Trade License") {
+                    type = isProductDetailsValid ? "Pre-Approval" : "New Trade License";
+                } else if (prospect_type === "Pre-Approval") {
+                    type = "Pre-Approval";
+                }
+                
+                console.log("Final Type: " + type);
+                console.log(isProductDetailsValid);
+                
+                // ====================================================================== //
             });
         });
     });
@@ -136,7 +165,7 @@ function create_record(event) {
         "Deal_Name": prospectId,
         "Status": "In-Progress",
         "Account_Name": accountId,
-        "Type": "New Trade License",
+        "Type": type,
         "License_Package": formData.Visa_Quota,
         "License_Jurisdiction": formData.License_Authority,
         "Layout": "3769920000104212264"
@@ -164,8 +193,7 @@ function create_record(event) {
                 "Total_Share_Capital": formData.Proposed_Share_Capital,
                 "Facility_Type": formData.Office_Type,
                 "Legal_Type": formData.Company_Formation_Type,
-                "Layout": "3769920000261689839",
-                "Primary_Contact_Name":primary_contact_name
+                "Layout": "3769920000261689839"
             };
 
             // Insert record in related list module
