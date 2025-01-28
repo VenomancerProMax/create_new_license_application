@@ -168,7 +168,9 @@ function create_record(event) {
         "Type": type,
         "License_Package": formData.Visa_Quota,
         "License_Jurisdiction": formData.License_Authority,
-        "Layout": "3769920000104212264"
+        "Layout": "3769920000104212264",
+        "AML_Connected": true,
+        "New_Resident_Visa_Stage":"Start"
     };
 
     // Insert the record in Applications1
@@ -193,7 +195,10 @@ function create_record(event) {
                 "Total_Share_Capital": formData.Proposed_Share_Capital,
                 "Facility_Type": formData.Office_Type,
                 "Legal_Type": formData.Company_Formation_Type,
-                "Layout": "3769920000261689839"
+                "AML_Connected": true,
+                "Layout": "3769920000261689839",
+                "Application_Stage":"Start",
+                "Application_Type":"Pre-Approval"
             };
 
             // Insert record in related list module
