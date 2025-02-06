@@ -170,7 +170,8 @@ function create_record(event) {
         "License_Jurisdiction": formData.License_Authority,
         "Layout": "3769920000104212264",
         "AML_Connected": true,
-        "New_Resident_Visa_Stage":"Start"
+        "New_Resident_Visa_Stage":"Start",
+        "Owner":"3769920000000662004"
     };
 
     // Insert the record in Applications1
@@ -198,7 +199,8 @@ function create_record(event) {
                 "AML_Connected": true,
                 "Layout": "3769920000261689839",
                 "Application_Stage":"Start",
-                "Application_Type":"Pre-Approval"
+                "Application_Type":"Pre-Approval",
+                "Owner":"3769920000000662004"
             };
 
             // Insert record in related list module
