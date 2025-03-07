@@ -170,8 +170,8 @@ function create_record(event) {
         "License_Jurisdiction": formData.License_Authority,
         "Layout": "3769920000104212264",
         "AML_Connected": true,
-        "New_Resident_Visa_Stage":"Start",
-        "Owner":"3769920000000662004"
+        "New_Resident_Visa_Stage":"Start"
+        // "Owner":"3769920000000662004"
     };
 
     // Insert the record in Applications1
