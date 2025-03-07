@@ -200,7 +200,7 @@ function create_record(event) {
                 "Layout": "3769920000261689839",
                 "Application_Stage":"Start",
                 "Application_Type":"Pre-Approval",
-                "Owner":"3769920000000662004",
+                // "Owner":"3769920000000662004",
                 "Application_Status": "In-Progress"
             };
 
