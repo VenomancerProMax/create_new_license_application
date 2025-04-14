@@ -171,3 +171,39 @@ input[type="number"] {
     transform: translateX(-50%);
     z-index: 9999;
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* spacing between buttons */
+    margin-top: 10px;
+}
+
+.button-confirm,
+.button-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-confirm {
+    background-color: #A0D468;
+}
+
+.button-confirm:hover {
+    background-color: #8CC152;
+}
+
+.button-cancel {
+    background-color: #D8334A;
+}
+
+.button-cancel:hover {
+    background-color: #C22E42;
+}
+
+

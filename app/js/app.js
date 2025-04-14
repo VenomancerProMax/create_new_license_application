@@ -127,39 +127,75 @@ function collectFormData() {
     };
 }
 
-// Creating a new record in Applications1
-function create_record(event) {
-    // Update Quotes Record set Create New License Application check box to true
-    var updateQuotes={
-            Entity: "Quotes", 
-            APIData: {
-                "id": quoteId,
-                "Create_New_License_Application": true
-          }, 
-            // Trigger:["workflow"]
-        }
-        ZOHO.CRM.API.updateRecord(updateQuotes)
-        .then(function(data){
-        console.log("QUOTE DATA UPDATED: ", data)
-    })
+// Custom confirm function
+function showConfirmation(message, onConfirm, onCancel) {
+    const dialog = document.getElementById("confirmation-dialog");
+    const messageBox = document.getElementById("confirmation-message");
+    const confirmBtn = document.getElementById("confirm-button");
+    const cancelBtn = document.getElementById("cancel-button");
 
+    messageBox.textContent = message;
+    dialog.classList.remove("hidden");
+
+    confirmBtn.onclick = () => {
+        dialog.classList.add("hidden");
+        console.log("User confirmed");
+        if (onConfirm) onConfirm();
+    };
+
+    cancelBtn.onclick = () => {
+        dialog.classList.add("hidden");
+        if (onCancel) onCancel();
+        // ZOHO.CRM.UI.Popup.close();
+    };
+}
+
+
+// Main form submission logic
+function create_record(event) {
     event.preventDefault();
-    // Collect form data
     collectFormData();
-    
+
+    const licenseAuthority = formData.License_Authority;
+    const shareCapital = parseFloat(formData.Proposed_Share_Capital || 0);
+
+    if (licenseAuthority === "International Free Zone Authority" && shareCapital >= 48000) {
+        showConfirmation(
+            "The Total share capital is AED48,000 and above. It is a suspected investor visa application. Can you make sure to check the quote whether the BSC has the correct charges in line of the client's requirement?",
+            () => proceedWithRecordCreation(),
+            () => console.log("User cancelled submission.")
+        );
+    } else {
+        proceedWithRecordCreation();
+    }
+}
+
+// Separated logic to handle actual record creation
+function proceedWithRecordCreation() {
+    // Update Quotes
+    var updateQuotes = {
+        Entity: "Quotes",
+        APIData: {
+            "id": quoteId,
+            "Create_New_License_Application": true
+        }
+    };
+    ZOHO.CRM.API.updateRecord(updateQuotes)
+    .then(function(data) {
+        console.log("QUOTE DATA UPDATED: ", data);
+    });
+
     let email = "";
-    // Use if-else to set email based on License Authority
     if (formData.License_Authority === "Ajman Free Zone" || formData.License_Authority === "Ajman Media City Free Zone") {
-            email = "opsn@uaecsp.club";
-        } else if (formData.License_Authority === "International Free Zone Authority") {
-            email = "partner@ifza.com";
-        } else if (formData.License_Authority === "Sharjah Media City") {
-            email = "safwan.m@scs.shams.ae";
-        } else {
-            email = "operations@tlz.ae";
+        email = "opsn@uaecsp.club";
+    } else if (formData.License_Authority === "International Free Zone Authority") {
+        email = "partner@ifza.com";
+    } else if (formData.License_Authority === "Sharjah Media City") {
+        email = "safwan.m@scs.shams.ae";
+    } else {
+        email = "operations@tlz.ae";
     }
 
-    // Define the data to insert, combining form data and fetched quote data
     var recordData = {
         "Authority_Email_Address": email,
         "Deal_Name": prospectId,
@@ -170,22 +206,17 @@ function create_record(event) {
         "License_Jurisdiction": formData.License_Authority,
         "Layout": "3769920000104212264",
         "AML_Connected": true,
-        "New_Resident_Visa_Stage":"Start"
-        // "Owner":"3769920000000662004"
+        "New_Resident_Visa_Stage": "Start"
     };
 
-    // Insert the record in Applications1
-    ZOHO.CRM.API.insertRecord({ 
-        Entity: "Applications1", 
-        APIData: recordData,
-        //  Trigger: ["workflow"] 
-        })
-    .then(function(response1) {
+    ZOHO.CRM.API.insertRecord({
+        Entity: "Applications1",
+        APIData: recordData
+    }).then(function(response1) {
         const applicationData = response1.data;
         applicationData.map((record) => {
             const applicationId = record.details.id;
 
-            // Prepare data for the related list record
             var recordNewLicenseData = {
                 "New_License_Application_Type": "New",
                 "Status": "In-Progress",
@@ -198,38 +229,31 @@ function create_record(event) {
                 "Legal_Type": formData.Company_Formation_Type,
                 "AML_Connected": true,
                 "Layout": "3769920000261689839",
-                "Application_Stage":"Start",
-                "Application_Type":"Pre-Approval",
+                "Application_Stage": "Start",
+                "Application_Type": "Pre-Approval",
                 // "Owner":"3769920000000662004",
                 "Application_Status": "In-Progress"
             };
 
-            // Insert record in related list module
-            ZOHO.CRM.API.insertRecord({ 
-                Entity: "New_License_Forms", 
+            ZOHO.CRM.API.insertRecord({
+                Entity: "New_License_Forms",
                 APIData: recordNewLicenseData
-                // , Trigger: ["workflow"] 
-            })
-                .then(function(response2) {
-                    const relatedData = response2.data;
-                    relatedData.map((relatedRecord) => {
-                        new_license_id = relatedRecord.details.id;
-                        console.log("New License ID: " + new_license_id)
-                        let new_license_url = "https://crm.zoho.com/crm/org682300086/tab/CustomModule3/" + applicationId;
-                        window.open(new_license_url, '_blank').focus();
-                        // Disable the submit button and show the custom alert
-                        const submitButton = document.getElementById("submit_button_id");
-                        submitButton.disabled = true;
-                        submitButton.style.backgroundColor = "#D3D3D3";
-                        showCustomAlert("Application Record created. Please close the form.");
-                    });
-                })
-                .catch(function(error) {
-                    console.error("Error inserting related record:", error);
+            }).then(function(response2) {
+                const relatedData = response2.data;
+                relatedData.map((relatedRecord) => {
+                    new_license_id = relatedRecord.details.id;
+                    let new_license_url = "https://crm.zoho.com/crm/org682300086/tab/CustomModule3/" + applicationId;
+                    window.open(new_license_url, '_blank').focus();
+                    const submitButton = document.getElementById("submit_button_id");
+                    submitButton.disabled = true;
+                    submitButton.style.backgroundColor = "#D3D3D3";
+                    showCustomAlert("Application Record created. Please close the form.");
                 });
+            }).catch(function(error) {
+                console.error("Error inserting related record:", error);
+            });
         });
-    })
-    .catch(function(error) {
+    }).catch(function(error) {
         console.error("Error inserting main record:", error);
     });
 }
