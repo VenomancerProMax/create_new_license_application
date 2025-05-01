@@ -150,10 +150,18 @@ function showConfirmation(message, onConfirm, onCancel) {
     };
 }
 
-
+let isSubmitting = false;
 // Main form submission logic
 function create_record(event) {
     event.preventDefault();
+
+    if (isSubmitting) {
+        console.log("Submission already in progress.");
+        return;
+    }
+
+    isSubmitting = true;
+
     collectFormData();
 
     const licenseAuthority = formData.License_Authority;
@@ -163,7 +171,10 @@ function create_record(event) {
         showConfirmation(
             "The Total share capital is AED48,000 and above. It is a suspected investor visa application. Can you make sure to check the quote whether the BSC has the correct charges in line of the client's requirement?",
             () => proceedWithRecordCreation(),
-            () => console.log("User cancelled submission.")
+            () => {
+                console.log("User cancelled submission.");
+                isSubmitting = false;
+            }
         );
     } else {
         proceedWithRecordCreation();
