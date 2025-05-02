@@ -127,6 +127,34 @@ function collectFormData() {
     };
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const licenseAuthoritySelect = document.getElementById("license-authority");
+    const companyFormationSelect = document.getElementById("company-formation-type");
+
+    // Store the "General Freelance" option separately to add it back later huhu
+    const generalFreelanceOption = [...companyFormationSelect.options].find(option => option.value === "General Freelance");
+
+    function toggleGeneralFreelanceOption() {
+        const selectedAuthority = licenseAuthoritySelect.value;
+
+        // Remove it if exists
+        [...companyFormationSelect.options].forEach(opt => {
+            if (opt.value === "General Freelance") {
+                opt.remove();
+            }
+        });
+
+        // ONLY ADD if Ajman Free Zone is selected
+        if (selectedAuthority === "Ajman Free Zone") {
+            companyFormationSelect.appendChild(generalFreelanceOption);
+        }
+    }
+
+    licenseAuthoritySelect.addEventListener("change", toggleGeneralFreelanceOption);
+    toggleGeneralFreelanceOption();
+});
+
+
 // Custom confirm function
 function showConfirmation(message, onConfirm, onCancel) {
     const dialog = document.getElementById("confirmation-dialog");
