@@ -269,7 +269,7 @@ function proceedWithRecordCreation() {
                 "AML_Connected": true,
                 "Layout": "3769920000261689839",
                 "Application_Stage": "Start",
-                "Application_Type": "Pre-Approval",
+                "Application_Type": type,
                 // "Owner":"3769920000000662004",
                 "Application_Status": "In-Progress"
             };
