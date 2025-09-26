@@ -7,6 +7,7 @@ let formData = {};
 let applicationId = "";
 let new_license_id;
 let prospectId;
+let prospect_type;
 
 // Function to display the custom alert
 function showCustomAlert(message) {
@@ -110,8 +111,12 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
                 console.log(isProductDetailsValid);
                 
                 // ====================================================================== //
+
+                document.getElementById("prospect-type").value = prospect_type || "";
             });
         });
+
+        
     });
 });
 
@@ -123,7 +128,8 @@ function collectFormData() {
         Office_Type: document.getElementById("office-type").value,
         Visa_Quota: document.getElementById("visa-quota").value,
         Proposed_Share_Capital: document.getElementById("proposed-share-capital").value,
-        Share_Value: document.getElementById("share-value").value
+        Share_Value: document.getElementById("share-value").value,
+        Type: document.getElementById("prospect-type").value
     };
 }
 
@@ -240,7 +246,7 @@ function proceedWithRecordCreation() {
         "Deal_Name": prospectId,
         "Status": "In-Progress",
         "Account_Name": accountId,
-        "Type": type,
+        "Type": formData.Type,
         "License_Package": formData.Visa_Quota,
         "License_Jurisdiction": formData.License_Authority,
         "Layout": "3769920000104212264",
@@ -269,7 +275,7 @@ function proceedWithRecordCreation() {
                 "AML_Connected": true,
                 "Layout": "3769920000261689839",
                 "Application_Stage": "Start",
-                "Application_Type": type,
+                "Application_Type": formData.Type,
                 // "Owner":"3769920000000662004",
                 "Application_Status": "In-Progress"
             };
