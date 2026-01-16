@@ -35,6 +35,26 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
     
     ZOHO.CRM.API.getRecord({ Entity:"Quotes", approved:"both",RecordID: entity_id })
     .then(function(data) {
+
+        const quoteData1 = data.data[0];
+
+        console.group("DEBUG: Quote Load Data");
+        console.log("1. Full Quote Object:", quoteData1);
+        console.log("2. Deal ID (Prospect):", quoteData1.Deal_Name ? quoteData1.Deal_Name.id : "MISSING");
+        console.log("3. Account ID:", quoteData1.Account_Name ? quoteData1.Account_Name.id : "MISSING");
+        
+        if(quoteData1.Product_Details) {
+            console.log("4. Product Details Subform:");
+            console.table(quoteData1.Product_Details.map(item => ({
+                ProductName: item.product ? item.product.name : "NULL",
+                Quantity: item.quantity,
+                NetTotal: item.net_total
+            })));
+        } else {
+            console.warn("4. Product_Details is EMPTY or UNDEFINED");
+        }
+        console.groupEnd();
+
         const quoteData = data.data;
         quoteData.map((data) => {
             quoteId = data.id;
@@ -120,6 +140,43 @@ ZOHO.embeddedApp.on("PageLoad", entity => {
     });
 });
 
+function isFormValid() {
+    let isValid = true;
+    const fields = [
+        "prospect-type", "license-authority", "company-formation-type", 
+        "office-type", "visa-quota", "proposed-share-capital", "share-value"
+    ];
+
+    fields.forEach(id => {
+        const input = document.getElementById(id);
+        const errorSpan = document.getElementById(`error-${id}`);
+        const val = input.value.trim();
+
+        // Check for empty
+        if (!val) {
+            input.classList.add("error");
+            if (errorSpan) errorSpan.textContent = "This field is required.";
+            isValid = false;
+        } else {
+            // Additional logic for Share Value numeric check
+            if (id === "share-value") {
+                const num = Number(val);
+                if (!Number.isInteger(num) || num < 0) {
+                    input.classList.add("error");
+                    if (errorSpan) errorSpan.textContent = "Must be a positive whole number.";
+                    isValid = false;
+                    return;
+                }
+            }
+            // Clear previous errors if fixed
+            input.classList.remove("error");
+            if (errorSpan) errorSpan.textContent = "";
+        }
+    });
+
+    return isValid;
+}
+
 // Collecting form data
 function collectFormData() {
     formData = {
@@ -136,21 +193,17 @@ function collectFormData() {
 document.addEventListener("DOMContentLoaded", function () {
     const licenseAuthoritySelect = document.getElementById("license-authority");
     const companyFormationSelect = document.getElementById("company-formation-type");
+    const shareInput = document.getElementById("share-value");
+    const errorSpan = document.getElementById("error-share-value");
+    const submitButton = document.getElementById("submit_button_id");
 
-    // Store the "General Freelance" option separately to add it back later huhu
     const generalFreelanceOption = [...companyFormationSelect.options].find(option => option.value === "General Freelance");
 
     function toggleGeneralFreelanceOption() {
         const selectedAuthority = licenseAuthoritySelect.value;
-
-        // Remove it if exists
         [...companyFormationSelect.options].forEach(opt => {
-            if (opt.value === "General Freelance") {
-                opt.remove();
-            }
+            if (opt.value === "General Freelance") opt.remove();
         });
-
-        // ONLY ADD if Ajman Free Zone is selected
         if (selectedAuthority === "Ajman Free Zone") {
             companyFormationSelect.appendChild(generalFreelanceOption);
         }
@@ -158,6 +211,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     licenseAuthoritySelect.addEventListener("change", toggleGeneralFreelanceOption);
     toggleGeneralFreelanceOption();
+
+    shareInput.addEventListener("input", function () {
+        const rawValue = shareInput.value.trim();
+
+        // Reset state: remove errors and enable button by default
+        errorSpan.textContent = "";
+        shareInput.classList.remove("error");
+        submitButton.disabled = false;
+
+        // Validation Chain
+        if (rawValue === "") {
+            errorSpan.textContent = "Share Value is required.";
+            shareInput.classList.add("error");
+            submitButton.disabled = true;
+        } 
+        else {
+            const numericValue = Number(rawValue);
+            
+            if (!Number.isInteger(numericValue)) {
+                errorSpan.textContent = "Share Value must be a whole number (e.g. 1, 10, 100).";
+                shareInput.classList.add("error");
+                submitButton.disabled = true;
+            } 
+            else if (numericValue < 0) {
+                errorSpan.textContent = "Share Value cannot be negative.";
+                shareInput.classList.add("error");
+                submitButton.disabled = true;
+            }
+        }
+    });
 });
 
 
@@ -188,6 +271,11 @@ let isSubmitting = false;
 // Main form submission logic
 function create_record(event) {
     event.preventDefault();
+
+    if (!isFormValid()) {
+        console.log("Validation failed. Stopping submission.");
+        return;
+    }
 
     if (isSubmitting) {
         console.log("Submission already in progress.");

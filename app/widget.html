@@ -9,14 +9,19 @@
 <body>
     <div class="form-container">
         <form id="record-form">
+
             <label for="prospect-type">Prospect Type</label>
-            <select id="prospect-type" name="prospect-type">
-                <option value="" disabled selected>Select an option</option>
-                <option value="New Trade License">New Trade License</option>
-                <option value="Pre-Approval">Pre-Approval</option>
-            </select>
+            <div class="input-wrapper">
+                <select id="prospect-type" name="prospect-type">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="New Trade License">New Trade License</option>
+                    <option value="Pre-Approval">Pre-Approval</option>
+                </select>
+                <span class="error-message" id="error-prospect-type"></span>
+            </div>
 
             <label for="license-authority">License Authority</label>
+            <div class="input-wrapper">
             <select id="license-authority" name="license_authority">
                 <option value="" disabled selected>Select an option</option>
                 <option value="Abu Dhabi Airport Free Zone">Abu Dhabi Airport Free Zone</option>
@@ -66,8 +71,11 @@
                 <option value="Umm Al Quwain Free Trade Zone">Umm Al Quwain Free Trade Zone</option>
                 <option value="RAK Department of Economic Development">RAK Department of Economic Development</option>
             </select>
+            <span class="error-message" id="error-license-authority"></span>
+            </div>
 
             <label for="company-formation-type">Company Formation Type</label>
+            <div class="input-wrapper">
             <select id="company-formation-type" name="company-formation-type">
                 <option value="" disabled selected>Select an option</option>
                 <option value="Branch of a Foreign Company">Branch of a Foreign Company</option>
@@ -80,8 +88,11 @@
                 <option value="Mainland Company (Single Shareholder)">Mainland Company (Single Shareholder)</option>
                 <option value="General Freelance">General Freelance</option>
             </select>
+            <span class="error-message" id="error-company-formation-type"></span>
+            </div>
 
             <label for="office-type">Office Type</label>
+            <div class="input-wrapper">
             <select id="office-type" name="office-type">
                 <option value="" disabled selected>Select an option</option>
                 <option value="Shared Desk">Shared Desk</option>
@@ -90,8 +101,11 @@
                 <option value="Dedicated Office/Facility">Dedicated Office/Facility</option>
                 <option value="No Lease Option">No Lease Option</option>
             </select>
+            <span class="error-message" id="error-office-type"></span>
+            </div>
 
             <label for="visa-quota">Visa Quota</label>
+            <div class="input-wrapper">
             <select id="visa-quota" name="visa-quota">
                 <option value="" disabled selected>Select an option</option>
                 <option value="Zero Visa License">Zero Visa License</option>
@@ -120,17 +134,25 @@
                 <option value="Holding">Holding</option>
                 <option value="Based on Office Size">Based on Office Size</option>
             </select>
+            <span class="error-message" id="error-visa-quota"></span>
+            </div>
 
             <label for="proposed-share-capital">Proposed Share Capital</label>
             <div class="currency-field">
                 <span class="currency-symbol">AED</span>
-                <input type="number" id="proposed-share-capital" name="proposed_share_capital" min="0" step="0.01" placeholder="0.00">
+                <div class="input-wrapper">
+                    <input type="number" id="proposed-share-capital" name="proposed_share_capital" min="0" step="0.01" placeholder="0.00">
+                    <span class="error-message" id="error-proposed-share-capital"></span>
+                </div>
             </div>
             
             <label for="share-value">Share Value</label>
             <div class="currency-field">
                 <span class="currency-symbol">AED</span>
-                <input type="number" id="share-value" name="share_value" min="0" step="0.01" placeholder="0.00">
+                <div class="input-wrapper">
+                    <input type="number" id="share-value" name="share_value" min="0" step="1" placeholder="0">
+                    <span class="error-message" id="error-share-value"></span>
+                </div>
             </div>
 
             <div id="custom-alert" class="custom-alert hidden">
